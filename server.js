@@ -40,7 +40,7 @@ app.get('/version', (req, res) => {
 // mock events endpoint. this would be replaced by a call to a datastore
 // if you went on to develop this as a real application.
 app.get('/events', (req, res) => {
-    getEvents(req, res);
+    res.json(mockEvents);
 });
 
 // Adds an event - in a real solution, this would insert into a cloud datastore.
@@ -104,8 +104,13 @@ function getEvents(req, res) {
             if (!snapshot.empty) {
                 const ret = { events: []};
                 snapshot.docs.forEach(element => {
-                    ret.events.push(element.data());
-                }, this);
+                //get data
+                    const el = element.data();
+                    //get internal firestore id and assign to object
+                    el.id = element.id;
+                    //add object to array
+                    ret.events.push(el);
+                    }, this);
                 console.log(ret);
                 res.json(ret);
             } else {
